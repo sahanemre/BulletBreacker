@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
 
     public AudioClip coinSound;
     public AudioClip explosionSound;
+    
     AudioSource audioSource;
 
 
@@ -35,15 +36,27 @@ public class GameManager : MonoBehaviour
     private GameObject instandietedExtraBall;
     public GameObject Coin;
     private GameObject instantiatedCoin;
+    public GameObject GameOverPanelGO;
+    public GameObject StartPanelGO;
+    public GameObject explosionObj;
+    private GameObject instantiatedExp;
+    public GameObject saloonName, saloonNo;
 
     private Transform ballTransform;
 
     public bool bulletSlowing;
 
-    
+    public float bulletRandomSpeed1/* , bulletRandomSpeed2, bulletRandomSpeed3, bulletRandomSpeed4, bulletRandomSpeed5;*/;
+    public int column;
+    private float RandomTransform1,RandomTransform2;
 
+
+    
     private void Awake()
     {
+        Time.timeScale = 0;
+        
+
         levelNo = 1;
         LoadLevel(levelNo);
 
@@ -51,8 +64,8 @@ public class GameManager : MonoBehaviour
         ballStartPosition = ballTransform.position;
 
         audioSource = GetComponent<AudioSource>();
-
-
+        DontDestroyOnLoad(audioSource);
+        
 
     }
     void Start()
@@ -62,11 +75,22 @@ public class GameManager : MonoBehaviour
         totalCoinScore = PlayerPrefs.GetInt("totalScore", (int)totalCoinScore);
         textCoinScore.text = totalCoinScore.ToString();
 
-        Debug.Log(totalCoinScore);
+        RandomTransform1 = Random.Range(-2, 2);
+        RandomTransform2 = Random.Range(-2, 2);
+
+        //Debug.Log(totalCoinScore);
+
+        //bulletRandomSpeed1 = Random.Range(speedLevelMin, speedLevelMax);
+        //bulletRandomSpeed2 = Random.Range(speedLevelMin, speedLevelMax);
+        //bulletRandomSpeed3 = Random.Range(speedLevelMin, speedLevelMax);
+        //bulletRandomSpeed4 = Random.Range(speedLevelMin, speedLevelMax);
+        //bulletRandomSpeed5 = Random.Range(speedLevelMin, speedLevelMax);
+        Debug.Log(bulletRandomSpeed1);
+        
     }
 
     // Update is called once per frame
-   
+
 
     private void FixedUpdate()
     {
@@ -78,6 +102,13 @@ public class GameManager : MonoBehaviour
 
       
     }
+
+    public void randomSpeed(float speedLevelMin, float speedLevelMax)
+    {
+        Random.Range(speedLevelMin, speedLevelMax);    
+    }
+
+   
 
     public void updateCoinScore(int updateCoinAmount)
     {
@@ -109,10 +140,6 @@ public class GameManager : MonoBehaviour
         Destroy(bigExplosion, 1f);
     }
 
-    public void GameOverPanel()
-    {
-
-    }
 
     public void UpdateBulletList()
     {
@@ -149,6 +176,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadLevel(int levelIndex)
     {
+        
         if (currentLevelObj != null)
         {
             Destroy(currentLevelObj);
@@ -174,6 +202,9 @@ public class GameManager : MonoBehaviour
 
     public void RestartLevel()
     {
+        Time.timeScale = 1;
+        GameOverPanelGO.SetActive(false);
+
         levelNo = 1;
         LoadLevel(levelNo);
 
@@ -181,6 +212,25 @@ public class GameManager : MonoBehaviour
         Destroy(instandietedExtraBall);
     }
 
+
+    public void GameOverPanel()
+    {
+        //DestroyCurrentLevel();
+        Destroy(currentLevelObj);
+        GameOverPanelGO.SetActive(true);
+    }
+    void isActive(bool isTrue)
+    {
+        saloonName.SetActive(isTrue);
+        saloonNo.SetActive(isTrue);
+    }
+
+    public void startGame()
+    {
+        StartPanelGO.SetActive(false);
+        Time.timeScale = 1;
+        isActive(true);
+    }
     public void InstantiateBall()
     {
         //if (levelNo == 2)
@@ -216,7 +266,19 @@ public class GameManager : MonoBehaviour
         int possibilty = Random.Range(0, 100);
         if (possibilty >= 40 && possibilty <= 60)
         {
-            instantiatedCoin = Instantiate(Coin, transform.position, Quaternion.identity) as GameObject;
+            instantiatedCoin = Instantiate(Coin, new Vector2(RandomTransform1,RandomTransform2), Quaternion.identity) as GameObject;
+        }
+
+
+    }
+
+    public void ExplosionOccurPossibility()
+    {
+        Destroy(instantiatedExp);
+        int possibilty = Random.Range(0, 100);
+        if (possibilty >= 19 && possibilty <= 39)
+        {
+            instantiatedExp = Instantiate(explosionObj, new Vector2(RandomTransform2, RandomTransform1), Quaternion.identity) as GameObject;
         }
 
 
@@ -235,6 +297,11 @@ public class GameManager : MonoBehaviour
     public void triggerExplosionSound()
     {
         PlaySFX(explosionSound);
+    }
+
+    public void DestroyCurrentLevel()
+    {
+        Destroy(currentLevelObj);
     }
 
 }

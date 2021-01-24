@@ -23,6 +23,7 @@ public class BallController : MonoBehaviour
     Rigidbody2D rb;
     SpriteRenderer dotsSprite, snipeSprite;
     TrailRenderer tr;
+    LineRenderer lr;
     
 
     private Transform ballBaseTransform;
@@ -34,7 +35,9 @@ public class BallController : MonoBehaviour
         //Ball Trail Effect and Rigidbody
         rb = GetComponent<Rigidbody2D>();
         tr = GetComponent<TrailRenderer>();
+        lr = GetComponent<LineRenderer>();
         ballStartPosition = transform.position;
+
 
         //Ball dots and snipe sprites renderer
         dotsSprite = Dot.GetComponent<SpriteRenderer>();
@@ -79,6 +82,8 @@ public class BallController : MonoBehaviour
 
         //Debug.Log(transform.up);
         //Debug.Log(rb.velocity);
+        
+        
     }
 
     private void OnMouseUp()
@@ -92,7 +97,7 @@ public class BallController : MonoBehaviour
             ballMoving = true;
             SpriteBool(false);
 
-            tr.enabled = true;
+           
         }
     }
 
@@ -105,7 +110,9 @@ public class BallController : MonoBehaviour
         mousePosition = new Vector2(mouseX, mouseY);
         direction = (mousePosition - (Vector2)transform.position).normalized;
         transform.up = -direction;
-        
+
+        lr.SetPosition(1, transform.up);
+
     }
 
     private void OnMouseDown()
@@ -113,17 +120,16 @@ public class BallController : MonoBehaviour
         if (ballMoving == false)
         {
             SpriteBool(true);
+            lr.SetPosition(0, transform.position);
         }
-        
-        
-       
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //Prevention or Fix from balls stick to bug
         Vector2 deviation = new Vector2(Random.Range(-0.2f, 0.2f), Random.Range(-0.2f, 0.2f));
-        Debug.Log(deviation);
+        //Debug.Log(deviation);
         if (collision.gameObject.CompareTag("Wall"))
         {
             rb.velocity += deviation;

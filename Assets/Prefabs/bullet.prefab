@@ -263,8 +263,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bd30ea7c7952c347b4df5c8e7e1b047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: -0.5
   dieEffect: {fileID: 180128, guid: 6586ff0f14125534cae2f5d8f04b7871, type: 3}
+  bulletManager: {fileID: 5052673259421345881, guid: 52a2713392b429b44a0651bebc5bb6b6, type: 3}
+  randomSpeed: {fileID: 8774088500044943703, guid: d471b4e51743f1345a03ded65e70e6fe, type: 3}
 --- !u!114 &8709273453652808030
 MonoBehaviour:
   m_ObjectHideFlags: 0
